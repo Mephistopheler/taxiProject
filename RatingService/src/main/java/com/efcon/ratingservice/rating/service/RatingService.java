@@ -16,40 +16,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RatingService {
 
-    private static final Logger log = LoggerFactory.getLogger(RatingService.class);
+
 
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
 
     public RatingResponseDto rateTrip(RatingRequestDto requestDto) {
-        log.info("Received request to rate trip: {}", requestDto);
+
 
         // Маппим DTO в сущность
         Rating rating = ratingMapper.toEntity(requestDto);
-        log.info("Mapped Rating entity: {}", rating);
+
 
         // Сохраняем в Redis
         Rating savedRating = ratingRepository.save(rating);
-        log.info("Saved Rating: {}", savedRating);
+
 
         // Маппим обратно в DTO и возвращаем
         RatingResponseDto responseDto = ratingMapper.toDto(savedRating);
-        log.info("Returning RatingResponseDto: {}", responseDto);
+
 
         return responseDto;
     }
 
     public List<RatingResponseDto> getByTrip(String tripId) {
-        log.info("Fetching ratings for tripId: {}", tripId);
+
 
         List<Rating> ratings = ratingRepository.findByTripId(tripId);
-        log.info("Found {} ratings for tripId {} in the database", ratings.size(), tripId);
 
         List<RatingResponseDto> responseDtos = ratings.stream()
                 .map(ratingMapper::toDto)
                 .toList();
 
-        log.info("Returning {} RatingResponseDto(s) for tripId: {}", responseDtos.size(), tripId);
+
 
         return responseDtos;
     }
